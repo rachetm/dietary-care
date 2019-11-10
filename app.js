@@ -32,7 +32,7 @@ app.get('/:name', (req, res) => {
         // console.log(product);
         if(err)
         {
-            res.send({"status" : 403, "message" : err.message});
+            res.send({"status" : 404, "message" : "Something went wrong! Try again."});
         }
         if(product.length === 0)
         {
