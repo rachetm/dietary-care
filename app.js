@@ -29,7 +29,7 @@ app.get('/:name', (req, res) => {
 //    console.log(req.params.name);
     // Product.find( (err, product) => console.log(product));
     Product.find({name : req.params.name}, (err, product) => {
-        console.log(product);
+        // console.log(product);
         if(err)
         {
             res.send({"status" : 403, "message" : err.message});
