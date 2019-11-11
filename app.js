@@ -22,7 +22,11 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.send({"message" : "Usage /:name "});
+    res.send({"message" : ["Usage /:name ", "Usage /ingredients/:name"]});
+});
+
+app.get('/ingredients', (req, res) => {
+    res.send({"message" : ["Usage /:name ", "Usage /ingredients/:name"]});
 });
 
 app.get('/:name', (req, res) => {
@@ -43,6 +47,29 @@ app.get('/:name', (req, res) => {
             return;
         }
         res.send({status: 200, product});
+    });
+});
+
+app.get('/ingredients/:name', (req, res) => {
+    Product.find({name : req.params.name}, (err, product) => {
+        if(err)
+        {
+            res.send({"status" : 404, "message" : "Something went wrong! Try again."});
+        }
+        if(product.length === 0)
+        {
+            res.send({ 
+                status : 404,
+                message: "Product not found"
+            });
+            return;
+        }
+        res.send(
+            {
+                status: 200, 
+                ingredients : product[0].ingredients
+            }
+            );
     });
 });
 
