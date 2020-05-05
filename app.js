@@ -80,9 +80,10 @@ app.post('/products/add', (req, res) => {
                 data: result,
             });
         });
+        return;
     }
     const msg = localisable.nothingToAdd;
-    return handleError(res, {}, msg, 400);
+    handleError(res, {}, msg, 400);
 });
 
 app.delete('/products/delete', (req, res) => {
@@ -99,9 +100,10 @@ app.delete('/products/delete', (req, res) => {
                 data: result,
             });
         });
+        return;
     }
     const msg = 'Unauthorized';
-    return handleError(res, {}, msg, 403);
+    handleError(res, {}, msg, 403);
 });
 
 app.listen(port);
