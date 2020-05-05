@@ -109,6 +109,7 @@ app.delete('/products/delete', (req, res) => {
                 status: 200,
                 message: localisable.success,
                 deletedCount,
+                data: result,
             });
         });
         return;
