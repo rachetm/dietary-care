@@ -7,7 +7,7 @@
     "start": "node -r esm app.js",
     "test": "nodemon -r esm app.js"
   },
-  "author": "",
+  "author": "rachetm",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -19,9 +19,9 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.2"
+    "eslint-plugin-import": "^2.20.2",
+    "nodemon": "^2.0.3"
   }
 }
