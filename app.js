@@ -22,6 +22,8 @@ const closeConnection = () => {
     mongoose.disconnect().then(() => console.log('Connection closed'));
 };
 
+makeConnection();
+
 const app = express();
 
 const port = process.env.PORT || 3000;
@@ -52,43 +54,43 @@ app.get('/', (req, res) => res.status(200).send({
 }));
 
 app.get('/products', (req, res) => {
-    makeConnection();
+    // makeConnection();
     Products.find({}, (err, products) => {
         if (err) {
-            closeConnection();
+            // closeConnection();
             const msg = localisable.somethingWentWrong;
             return handleError(res, err, msg);
         }
-        closeConnection();
+        // closeConnection();
         return res.status(200).send({ status: 200, data: { products } });
     });
 });
 
 app.get('/products/search', (req, res) => {
-    makeConnection();
+    // makeConnection();
     const { body: { query } = {} } = req;
     Products.find({ ...query }, (err, products) => {
         if (err) {
-            closeConnection();
+            // closeConnection();
             const msg = localisable.somethingWentWrong;
             return handleError(res, err, msg);
         }
-        closeConnection();
+        // closeConnection();
         return res.status(200).send({ status: 200, data: { products } });
     });
 });
 
 app.post('/products/add', (req, res) => {
-    makeConnection();
+    // makeConnection();
     const { body: { data = [] } = {} } = req;
     if (data && data.length) {
         Products.insertMany(data, (err, result) => {
             if (err) {
-                closeConnection();
+                // closeConnection();
                 const msg = localisable.failed;
                 return handleError(res, err, msg, 500);
             }
-            closeConnection();
+            // closeConnection();
             return res.status(200).send({
                 status: 200,
                 message: localisable.success,
@@ -96,20 +98,20 @@ app.post('/products/add', (req, res) => {
             });
         });
     }
-    closeConnection();
+    // closeConnection();
     const msg = localisable.nothingToAdd;
     return handleError(res, {}, msg, 400);
 });
 
 app.delete('products/delete', (req, res) => {
-    makeConnection();
+    // makeConnection();
     Products.deleteMany({}, (err, result) => {
         if (err) {
-            closeConnection();
+            // closeConnection();
             const msg = localisable.failed;
             return handleError(res, err, msg, 500);
         }
-        closeConnection();
+        // closeConnection();
         return res.status(200).send({
             status: 200,
             message: localisable.success,
