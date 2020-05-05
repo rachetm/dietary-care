@@ -51,7 +51,12 @@ app.get('/products', (req, res) => {
             const msg = localisable.somethingWentWrong;
             return handleError(res, err, msg);
         }
-        return res.status(200).send({ status: 200, data: { products } });
+        return res.status(200).send({
+            status: 200,
+            message: localisable.success,
+            count: products.length,
+            data: { products },
+        });
     });
 });
 
@@ -62,7 +67,12 @@ app.get('/products/search', (req, res) => {
             const msg = localisable.somethingWentWrong;
             return handleError(res, err, msg);
         }
-        return res.status(200).send({ status: 200, data: { products } });
+        return res.status(200).send({
+            status: 200,
+            message: localisable.success,
+            count: products.length,
+            data: { products },
+        });
     });
 });
 
@@ -98,7 +108,7 @@ app.delete('/products/delete', (req, res) => {
             return res.status(200).send({
                 status: 200,
                 message: localisable.success,
-                data: { deletedCount },
+                deletedCount,
             });
         });
         return;
