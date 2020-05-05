@@ -11,6 +11,8 @@ const { database } = config;
 const makeConnection = () => {
     mongoose.connect(database, { useNewUrlParser: true }).then(() => console.log('Connected to MongoDB'));
 
+    console.log('PASS ----------------', process.env.ATLAS_PASS || 'Nope');
+
     // const { connection } = mongoose;
 
     // connection.once('open', () => console.log('Connected to MongoDB'));
