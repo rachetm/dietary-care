@@ -1,75 +1,120 @@
-const express = require("express");
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import config from './config/database/database';
+import Products from './models/products';
+import { handleError } from './utils/utils';
+import localisable from './config/strings/localisable';
 
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const { database } = config;
 
-const config = require('./config/database');
+const makeConnection = () => {
+    mongoose.connect(database, { useNewUrlParser: true }).then(() => console.log('Connected to MongoDB'));
 
-const Product = require('./models/product');
+    // const { connection } = mongoose;
 
-mongoose.connect(config.database);
-let db = mongoose.connection;
+    // connection.once('open', () => console.log('Connected to MongoDB'));
 
-db.once('open', () => console.log("Connected to MongoDB"));
+    // connection.on('error', (err) => console.log(err.message));
+};
 
-db.on('error', (err) => console.log(err.message));
+const closeConnection = () => {
+    mongoose.disconnect().then(() => console.log('Connection closed'));
+};
 
 const app = express();
 
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    res.send({"message" : ["Usage /:name ", "Usage /ingredients/:name"]});
-});
-
-app.get('/ingredients', (req, res) => {
-    res.send({"message" : ["Usage /:name ", "Usage /ingredients/:name"]});
-});
-
-app.get('/:name', (req, res) => {
-//    console.log(req.params.name);
-    // Product.find( (err, product) => console.log(product));
-    Product.find({name : req.params.name}, (err, product) => {
-        // console.log(product);
-        if(err)
+app.get('/', (req, res) => res.status(200).send({
+    status: 200,
+    message: localisable.welcomeMessage,
+    valid_endpoints: [
         {
-            res.send({"status" : 404, "message" : "Something went wrong! Try again."});
-        }
-        if(product.length === 0)
+            endpoint: '/products',
+            method: 'GET',
+            description: localisable.endpoint_1_description,
+        },
         {
-            res.send({ 
-                status : 404,
-                message: "Product not found"
-            });
-            return;
+            endpoint: '/products/search',
+            method: 'GET',
+            description: localisable.endpoint_2_description,
+        },
+        {
+            endpoint: '/products/add',
+            method: 'POST',
+            description: localisable.endpoint_3_description,
+        },
+    ],
+}));
+
+app.get('/products', (req, res) => {
+    makeConnection();
+    Products.find({}, (err, products) => {
+        if (err) {
+            closeConnection();
+            const msg = localisable.somethingWentWrong;
+            return handleError(res, err, msg);
         }
-        res.send({status: 200, product});
+        closeConnection();
+        return res.status(200).send({ status: 200, data: { products } });
     });
 });
 
-app.get('/ingredients/:name', (req, res) => {
-    Product.find({name : req.params.name}, (err, product) => {
-        if(err)
-        {
-            res.send({"status" : 404, "message" : "Something went wrong! Try again."});
+app.get('/products/search', (req, res) => {
+    makeConnection();
+    const { body: { query } = {} } = req;
+    Products.find({ ...query }, (err, products) => {
+        if (err) {
+            closeConnection();
+            const msg = localisable.somethingWentWrong;
+            return handleError(res, err, msg);
         }
-        if(product.length === 0)
-        {
-            res.send({ 
-                status : 404,
-                message: "Product not found"
-            });
-            return;
-        }
-        res.send(
-            {
-                status: 200, 
-                ingredients : product[0].ingredients
+        closeConnection();
+        return res.status(200).send({ status: 200, data: { products } });
+    });
+});
+
+app.post('/products/add', (req, res) => {
+    makeConnection();
+    const { body: { data = [] } = {} } = req;
+    if (data && data.length) {
+        Products.insertMany(data, (err, result) => {
+            if (err) {
+                closeConnection();
+                const msg = localisable.failed;
+                return handleError(res, err, msg, 500);
             }
-            );
+            closeConnection();
+            return res.status(200).send({
+                status: 200,
+                message: localisable.success,
+                data: result,
+            });
+        });
+    }
+    closeConnection();
+    const msg = localisable.nothingToAdd;
+    return handleError(res, {}, msg, 400);
+});
+
+app.delete('products/delete', (req, res) => {
+    makeConnection();
+    Products.deleteMany({}, (err, result) => {
+        if (err) {
+            closeConnection();
+            const msg = localisable.failed;
+            return handleError(res, err, msg, 500);
+        }
+        closeConnection();
+        return res.status(200).send({
+            status: 200,
+            message: localisable.success,
+            data: result,
+        });
     });
 });
 
