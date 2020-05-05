@@ -9,19 +9,13 @@ import localisable from './config/strings/localisable';
 const { database } = config;
 
 const makeConnection = () => {
-    mongoose.connect(database, { useNewUrlParser: true }).then(() => console.log('Connected to MongoDB'));
-
-    console.log('PASS ----------------', process.env.ATLAS_PASS || 'Nope');
-
-    // const { connection } = mongoose;
-
-    // connection.once('open', () => console.log('Connected to MongoDB'));
-
-    // connection.on('error', (err) => console.log(err.message));
+    mongoose.connect(database, { useNewUrlParser: true }).then((res) => {
+        console.log('Connected to MongoDB');
+    }).catch((err) => console.error(err));
 };
 
 const closeConnection = () => {
-    mongoose.disconnect().then(() => console.log('Connection closed'));
+    mongoose.disconnect().then(() => console.log('Connection closed')).catch((err) => console.error(err));
 };
 
 makeConnection();
@@ -122,6 +116,4 @@ app.delete('products/delete', (req, res) => {
     });
 });
 
-app.listen(port, () => {
-    console.log(`Listening on ${port}`);
-});
+app.listen(port);
