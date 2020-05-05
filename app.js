@@ -94,10 +94,11 @@ app.delete('/products/delete', (req, res) => {
                 const msg = localisable.failed;
                 return handleError(res, err, msg, 500);
             }
+            const { deletedCount } = result;
             return res.status(200).send({
                 status: 200,
                 message: localisable.success,
-                data: result,
+                data: { deletedCount },
             });
         });
         return;
