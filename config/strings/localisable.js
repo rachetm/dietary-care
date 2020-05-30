@@ -3,6 +3,7 @@ const localisable = {
     endpoint_1_description: 'Displays all products',
     endpoint_2_description: 'Lets you search for particular product by providing search query',
     endpoint_3_description: 'Lets you add a product to the database',
+    endpoint_4_description: 'Get product recommendation based on query parameters',
     success: 'Success',
     failed: 'Failed',
     somethingWentWrong: 'Something Went Wrong',
