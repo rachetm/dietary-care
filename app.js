@@ -44,7 +44,7 @@ app.get('/', (req, res) => res.status(200).send({
         },
         {
             endpoint: '/products/recommend',
-            method: 'POST',
+            method: 'GET',
             description: localisable.endpoint_4_description,
         },
     ],
