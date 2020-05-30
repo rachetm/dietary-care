@@ -1,4 +1,14 @@
-api.js
+apiTest.js
+
+testData.json
+
+testData_old.json
+
+products.json
+products_new.json
+
+script.js
+
 # Logs
 logs
 *.log

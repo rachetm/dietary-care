@@ -10,7 +10,7 @@ const { database } = config;
 
 const makeConnection = () => {
     mongoose.connect(database, { useNewUrlParser: true }).then(() => {
-        console.log('Connected to MongoDB');
+        // console.log('Connected to MongoDB');
     }).catch((err) => console.error(err));
 };
 
@@ -39,6 +39,11 @@ app.get('/', (req, res) => res.status(200).send({
         },
         {
             endpoint: '/products/add',
+            method: 'POST',
+            description: localisable.endpoint_3_description,
+        },
+        {
+            endpoint: '/products/recommend',
             method: 'POST',
             description: localisable.endpoint_3_description,
         },
@@ -77,28 +82,51 @@ app.get('/products/search', (req, res) => {
 });
 
 app.post('/products/add', (req, res) => {
-    const { body: { data = [] } = {} } = req;
-    if (data && data.length) {
-        Products.insertMany(data, (err, result) => {
-            if (err) {
-                const msg = localisable.failed;
-                return handleError(res, err, msg, 500);
-            }
-            return res.status(200).send({
-                status: 200,
-                message: localisable.success,
-                data: result,
+    const { body: { products, secretKey } } = req;
+    if (products && products.length) {
+        if (secretKey === process.env.ADD_PASS) {
+            Products.insertMany(products, (err, result) => {
+                if (err) {
+                    const msg = localisable.failed;
+                    return handleError(res, err, msg, 500);
+                }
+                const count = result.length;
+                return res.status(200).send({
+                    status: 200,
+                    message: localisable.success,
+                    count,
+                });
             });
-        });
-        return;
+        } else {
+            const msg = 'Unauthorized';
+            handleError(res, {}, msg, 403);
+        }
+    } else {
+        const msg = localisable.nothingToAdd;
+        handleError(res, {}, msg, 400);
     }
-    const msg = localisable.nothingToAdd;
-    handleError(res, {}, msg, 400);
 });
 
-app.delete('/products/delete', (req, res) => {
-    const { body: { pass } } = req;
-    if (pass === process.env.DELETE_PASS) {
+// { brand_name: 1, product_name: 1 }
+app.get('/products/recommend', (req, res) => {
+    const { body: { query } } = req;
+    Products.find({ ...query }, (err, products) => {
+        if (err) {
+            const msg = localisable.somethingWentWrong;
+            return handleError(res, err, msg);
+        }
+        return res.status(200).send({
+            status: 200,
+            message: localisable.success,
+            count: products.length,
+            data: { products },
+        });
+    });
+});
+
+app.delete('/products/deleteAll', (req, res) => {
+    const { body: { secretKey } } = req;
+    if (secretKey === process.env.DELETE_PASS) {
         Products.deleteMany({}, (err, result) => {
             if (err) {
                 const msg = localisable.failed;

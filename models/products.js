@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 const ProductsSchema = mongoose.Schema({
     brand_name: String,
     product_name: String,
-    ingredients: Array,
+    ingredients: String,
+    allergens: String,
+    category: String,
 });
 
 const Products = mongoose.model('Products', ProductsSchema);
