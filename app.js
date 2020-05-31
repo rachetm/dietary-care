@@ -107,7 +107,7 @@ app.post('/products/add', (req, res) => {
     }
 });
 
-app.post('/products/recommend', { brand_name: 1, product_name: 1 }, (req, res) => {
+app.post('/products/recommend', (req, res) => {
     const { body: { query } } = req;
     Products.find({ ...query }, (err, products) => {
         if (err) {
