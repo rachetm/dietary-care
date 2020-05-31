@@ -34,7 +34,7 @@ app.get('/', (req, res) => res.status(200).send({
         },
         {
             endpoint: '/products/search',
-            method: 'GET',
+            method: 'POST',
             description: localisable.endpoint_2_description,
         },
         {
@@ -44,7 +44,7 @@ app.get('/', (req, res) => res.status(200).send({
         },
         {
             endpoint: '/products/recommend',
-            method: 'GET',
+            method: 'POST',
             description: localisable.endpoint_4_description,
         },
     ],
@@ -65,7 +65,7 @@ app.get('/products', (req, res) => {
     });
 });
 
-app.get('/products/search', (req, res) => {
+app.post('/products/search', (req, res) => {
     const { body: { query } = {} } = req;
     Products.find({ ...query }, (err, products) => {
         if (err) {
@@ -107,8 +107,7 @@ app.post('/products/add', (req, res) => {
     }
 });
 
-// { brand_name: 1, product_name: 1 }
-app.get('/products/recommend', (req, res) => {
+app.post('/products/recommend', { brand_name: 1, product_name: 1 }, (req, res) => {
     const { body: { query } } = req;
     Products.find({ ...query }, (err, products) => {
         if (err) {
