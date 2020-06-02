@@ -65,7 +65,7 @@ app.get('/products', (req, res) => {
     });
 });
 
-app.post('/products/check', (req, res) => {
+app.post('/products/allergyCheck', (req, res) => {
     const { body: { query, user_allergens: userAllergens } = {} } = req;
     Products.find({ ...query }, (err, products) => {
         if (err) {
