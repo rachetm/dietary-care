@@ -73,7 +73,7 @@ app.post('/products/allergyCheck', (req, res) => {
             return handleError(res, err, msg);
         }
         if (products.length) {
-            const { isAllergic, allergicTo = '' } = checkIfAllergic(products, userAllergens);
+            const { isAllergic, allergicTo = '', category } = checkIfAllergic(products, userAllergens);
             return res.status(200).send({
                 status: 200,
                 message: localisable.success,
@@ -81,6 +81,7 @@ app.post('/products/allergyCheck', (req, res) => {
                 data: {
                     isAllergic,
                     allergicTo,
+                    category,
                 },
             });
         }

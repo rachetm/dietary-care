@@ -7,7 +7,7 @@ const handleError = (res = {}, err = {}, msg = '', status = 500) => res.status(s
 });
 
 const checkIfAllergic = (products, userAllergens) => {
-    const { ingredients, allergens } = products[0];
+    const { ingredients, allergens, category } = products[0];
 
     const allergiesList = new RegExp(userAllergens.toLowerCase().replace(',', '|'), 'ig');
 
@@ -20,7 +20,7 @@ const checkIfAllergic = (products, userAllergens) => {
         if (checkIngredients != null) allergicTo = checkIngredients.join();
         else allergicTo = checkAllergens.join();
 
-        return { isAllergic: 1, allergicTo };
+        return { isAllergic: 1, allergicTo, category };
     }
 
     return { isAllergic: 0 };
