@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import config from './config/database/database';
 import Products from './models/products';
-import { handleError } from './utils/utils';
+import { handleError, checkIfAllergic } from './utils/utils';
 import localisable from './config/strings/localisable';
 
 const { database } = config;
@@ -65,18 +65,29 @@ app.get('/products', (req, res) => {
     });
 });
 
-app.post('/products/search', (req, res) => {
-    const { body: { query } = {} } = req;
+app.post('/products/check', (req, res) => {
+    const { body: { query, user_allergens: userAllergens } = {} } = req;
     Products.find({ ...query }, (err, products) => {
         if (err) {
             const msg = localisable.somethingWentWrong;
             return handleError(res, err, msg);
         }
+        if (products.length) {
+            const { isAllergic, allergicTo = '' } = checkIfAllergic(products, userAllergens);
+            return res.status(200).send({
+                status: 200,
+                message: localisable.success,
+                product_exists: 1,
+                data: {
+                    isAllergic,
+                    allergicTo,
+                },
+            });
+        }
         return res.status(200).send({
             status: 200,
             message: localisable.success,
-            count: products.length,
-            data: { products },
+            product_exists: 0,
         });
     });
 });

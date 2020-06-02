@@ -6,6 +6,8 @@ const ProductsSchema = mongoose.Schema({
     ingredients: String,
     allergens: String,
     category: String,
+    link: String,
+    img: String,
 });
 
 const Products = mongoose.model('Products', ProductsSchema);
