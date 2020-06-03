@@ -51,4 +51,27 @@ const convertToUpperCase = (products) => {
     return newProducts;
 };
 
-export { handleError, checkIfAllergic, convertToUpperCase };
+const convertToLowerCase = (products) => {
+    const newProducts = products.map((product) => {
+        const {
+            product_name: productName, brand_name: brandName, category, ingredients, allergens,
+        } = product;
+        const newProduct = {
+            ...product,
+            product_name: productName.toLowerCase(),
+            brand_name: brandName.toLowerCase(),
+            category: category.toLowerCase(),
+            ingredients: ingredients.toLowerCase(),
+            allergens: allergens.toLowerCase(),
+        };
+        return newProduct;
+    });
+    return newProducts;
+};
+
+export {
+    handleError,
+    checkIfAllergic,
+    convertToUpperCase,
+    convertToLowerCase,
+};

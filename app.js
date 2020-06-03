@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import config from './config/database/database';
 import Products from './models/products';
-import { handleError, checkIfAllergic, convertToUpperCase } from './utils/utils';
+import { handleError, checkIfAllergic, convertToUpperCase, convertToLowerCase } from './utils/utils';
 import localisable from './config/strings/localisable';
 
 const { database } = config;
@@ -97,7 +97,8 @@ app.post('/products/add', (req, res) => {
     const { body: { products, secretKey } } = req;
     if (products && products.length) {
         if (secretKey === process.env.ADD_PASS) {
-            Products.insertMany(products, (err, result) => {
+            const updatedProducts = convertToLowerCase(products);
+            Products.insertMany(updatedProducts, (err, result) => {
                 if (err) {
                     const msg = localisable.failed;
                     return handleError(res, err, msg, 500);
