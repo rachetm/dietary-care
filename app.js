@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import config from './config/database/database';
 import Products from './models/products';
-import { handleError, checkIfAllergic, convertToUpperCase, convertToLowerCase } from './utils/utils';
+import {
+    handleError, checkIfAllergic, convertToUpperCase, convertToLowerCase,
+} from './utils/utils';
 import localisable from './config/strings/localisable';
 
 const { database } = config;
@@ -33,7 +35,7 @@ app.get('/', (req, res) => res.status(200).send({
             description: localisable.endpoint_1_description,
         },
         {
-            endpoint: '/products/search',
+            endpoint: '/products/allergyCheck',
             method: 'POST',
             description: localisable.endpoint_2_description,
         },
