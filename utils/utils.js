@@ -26,4 +26,29 @@ const checkIfAllergic = (products, userAllergens) => {
     return { isAllergic: 0 };
 };
 
-export { handleError, checkIfAllergic };
+function titleCase(string) {
+    const sentence = string.split(' ');
+    for (let i = 0; i < sentence.length; i += 1) {
+        sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
+    }
+    return sentence.join(' ');
+}
+
+const convertToUpperCase = (products) => {
+    const newProducts = products.map((product) => {
+        const {
+            product_name: productName, brand_name: brandName, link, img,
+        } = product;
+        const newProduct = {
+            // ...product,
+            link,
+            img,
+            product_name: titleCase(productName),
+            brand_name: titleCase(brandName),
+        };
+        return newProduct;
+    });
+    return newProducts;
+};
+
+export { handleError, checkIfAllergic, convertToUpperCase };

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import config from './config/database/database';
 import Products from './models/products';
-import { handleError, checkIfAllergic } from './utils/utils';
+import { handleError, checkIfAllergic, convertToUpperCase } from './utils/utils';
 import localisable from './config/strings/localisable';
 
 const { database } = config;
@@ -126,11 +126,12 @@ app.post('/products/recommend', (req, res) => {
             const msg = localisable.somethingWentWrong;
             return handleError(res, err, msg);
         }
+        const updatedProducts = convertToUpperCase(products);
         return res.status(200).send({
             status: 200,
             message: localisable.success,
             count: products.length,
-            data: { products },
+            data: { products: updatedProducts },
         });
     });
 });
