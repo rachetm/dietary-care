@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import config from './config/database/database';
 import Products from './models/products';
 import {
-    handleError, checkIfAllergic, convertToUpperCase, convertToLowerCase,
+    handleError, addAllergenKeyIfMissing, checkIfAllergic, convertToRepresentationalForm, convertToLowerCase,
 } from './utils/utils';
 import localisable from './config/strings/localisable';
 
@@ -99,7 +99,8 @@ app.post('/products/add', (req, res) => {
     const { body: { products, secretKey } } = req;
     if (products && products.length) {
         if (secretKey === process.env.ADD_PASS) {
-            const updatedProducts = convertToLowerCase(products);
+            let updatedProducts = convertToLowerCase(products);
+            updatedProducts = addAllergenKeyIfMissing(updatedProducts);
             Products.insertMany(updatedProducts, (err, result) => {
                 if (err) {
                     const msg = localisable.failed;
@@ -129,7 +130,7 @@ app.post('/products/recommend', (req, res) => {
             const msg = localisable.somethingWentWrong;
             return handleError(res, err, msg);
         }
-        const updatedProducts = convertToUpperCase(products);
+        const updatedProducts = convertToRepresentationalForm(products);
         return res.status(200).send({
             status: 200,
             message: localisable.success,

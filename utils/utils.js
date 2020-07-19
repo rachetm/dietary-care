@@ -6,6 +6,17 @@ const handleError = (res = {}, err = {}, msg = '', status = 500) => res.status(s
     },
 });
 
+const addAllergenKeyIfMissing = (products) => products.map((product) => {
+    const { allergens } = product;
+    if (!allergens) {
+        return {
+            ...product,
+            allergens: '',
+        };
+    }
+    return product;
+});
+
 const checkIfAllergic = (products, userAllergens) => {
     const { ingredients, allergens, category } = products[0];
 
@@ -26,52 +37,44 @@ const checkIfAllergic = (products, userAllergens) => {
     return { isAllergic: 0 };
 };
 
-function titleCase(string) {
+const titleCase = (string) => {
     const sentence = string.split(' ');
     for (let i = 0; i < sentence.length; i += 1) {
         sentence[i] = sentence[i][0].toUpperCase() + sentence[i].slice(1);
     }
     return sentence.join(' ');
-}
-
-const convertToUpperCase = (products) => {
-    const newProducts = products.map((product) => {
-        const {
-            product_name: productName, brand_name: brandName, link, img,
-        } = product;
-        const newProduct = {
-            // ...product,
-            link,
-            img,
-            product_name: titleCase(productName),
-            brand_name: titleCase(brandName),
-        };
-        return newProduct;
-    });
-    return newProducts;
 };
 
-const convertToLowerCase = (products) => {
-    const newProducts = products.map((product) => {
-        const {
-            product_name: productName, brand_name: brandName, category, ingredients, allergens,
-        } = product;
-        const newProduct = {
-            ...product,
-            product_name: productName.toLowerCase(),
-            brand_name: brandName.toLowerCase(),
-            category: category.toLowerCase(),
-            ingredients: ingredients.toLowerCase(),
-            allergens: allergens.toLowerCase(),
-        };
-        return newProduct;
-    });
-    return newProducts;
-};
+const convertToRepresentationalForm = (products) => products.map((product) => {
+    const {
+        product_name: productName, brand_name: brandName, link, img,
+    } = product;
+    return {
+        link,
+        img,
+        product_name: titleCase(productName),
+        brand_name: titleCase(brandName),
+    };
+});
+
+const convertToLowerCase = (products) => products.map((product) => {
+    const {
+        product_name: productName, brand_name: brandName, category, ingredients, allergens,
+    } = product;
+    return {
+        ...product,
+        product_name: productName.toLowerCase(),
+        brand_name: brandName.toLowerCase(),
+        category: category.toLowerCase(),
+        ingredients: ingredients.toLowerCase(),
+        allergens: allergens.toLowerCase(),
+    };
+});
 
 export {
     handleError,
+    addAllergenKeyIfMissing,
     checkIfAllergic,
-    convertToUpperCase,
+    convertToRepresentationalForm,
     convertToLowerCase,
 };
