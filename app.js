@@ -99,8 +99,8 @@ app.post('/products/add', (req, res) => {
     const { body: { products, secretKey } } = req;
     if (products && products.length) {
         if (secretKey === process.env.ADD_PASS) {
-            let updatedProducts = convertToLowerCase(products);
-            updatedProducts = addAllergenKeyIfMissing(updatedProducts);
+            let updatedProducts = addAllergenKeyIfMissing(products);
+            updatedProducts = convertToLowerCase(updatedProducts);
             Products.insertMany(updatedProducts, (err, result) => {
                 if (err) {
                     const msg = localisable.failed;
